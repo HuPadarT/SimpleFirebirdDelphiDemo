@@ -63,7 +63,7 @@ begin
     end
     else
     begin
-      ShowMessage('A fájl nem létezik!');
+      ShowMessage('File not found!');
     end;
   end;
 end;
@@ -213,8 +213,7 @@ begin
     end;
     FDQuery1.SQL.Clear;
     FDQuery1.SQL.Text := 'CREATE OR ALTER TRIGGER PERSON_BI FOR PERSON ' +
-      'ACTIVE BEFORE INSERT POSITION 0 ' +
-      'AS ' +
+      'ACTIVE BEFORE INSERT POSITION 0 AS ' +
       'BEGIN ' +
       '  IF (NEW.ID IS NULL) THEN ' +
       '  NEW.ID = NEXT VALUE FOR GEN_PERSON_ID; ' +
@@ -247,7 +246,7 @@ end;
 procedure TForm1.InsertSampleData;
 var FileContent: TStringList;
     Lines: TArray<string>;
-    Line, FileName: string;
+    FileName: string;
     Parts: TStringList;
     Headers: TDictionary<string, Integer>;
 begin
@@ -267,10 +266,9 @@ begin
           Exit;
         end;
 
-        Line := Lines[0]; // fejléc
         Parts.Delimiter := ';';
         Parts.StrictDelimiter := true;
-        Parts.DelimitedText := Line;
+        Parts.DelimitedText := Lines[0]; // fejléc
         if Parts.Count < 11 then // meg van minden mezõ?
         begin
           StatusBar1.Panels[0].Text := 'Not enough fields in the row.';
@@ -285,9 +283,9 @@ begin
 
         for var i := 1 to High(Lines) do
         begin
-          Line := Lines[i];
-          if Line = '' then Continue;
-          Parts.DelimitedText := Line;
+          if Lines[i] = '' then
+            Continue;
+          Parts.DelimitedText := Lines[i];
 
           if Parts.Count >= Headers.Count then  // Ellenõrizzük, hogy van-e elég oszlop
           begin
